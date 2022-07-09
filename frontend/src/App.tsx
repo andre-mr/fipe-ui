@@ -2,17 +2,17 @@ import Select from "./components/Select";
 import React, { useState, useEffect } from "react";
 import { FipeData } from './interfaces';
 
-const url = 'http://localhost:4000';
+const url = 'https://l3j0wbn7la.execute-api.sa-east-1.amazonaws.com/dev';
 
 async function getTabelas(): Promise<FipeData[]> {
   const response = await fetch(url, {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      Operation: "ConsultarTabelaDeReferencia",
+      Consulta: "ConsultarTabelaDeReferencia",
     }),
   });
-  let responseData = await response.json();
+  let responseData = JSON.parse(await response.json());
   let formattedData: FipeData[] = responseData.map((item: { Codigo: number, Mes: string }) => {
     return {
       Key: item.Codigo,
@@ -27,12 +27,12 @@ async function getMarcas(tabelaKey: string): Promise<FipeData[]> {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      Operation: "ConsultarMarcas",
+      Consulta: "ConsultarMarcas",
       codigoTabelaReferencia: tabelaKey,
       codigoTipoVeiculo: "1",
     }),
   });
-  let responseData = await response.json();
+  let responseData = JSON.parse(await response.json());
   let formattedData: FipeData[] = responseData.map((item: { Label: string, Value: number }) => {
     return {
       Key: item.Value,
@@ -47,13 +47,13 @@ async function getModelos(tabelaKey: string, marcaKey: string) {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      Operation: "ConsultarModelos",
+      Consulta: "ConsultarModelos",
       codigoTabelaReferencia: tabelaKey,
       codigoTipoVeiculo: "1",
       codigoMarca: marcaKey
     }),
   });
-  let responseData = await response.json();
+  let responseData = JSON.parse(await response.json());
   let formattedData: FipeData[] = responseData.Modelos.map((item: { Label: string, Value: number }) => {
     return {
       Key: item.Value,
@@ -68,14 +68,14 @@ async function getAnos(tabelaKey: string, marcaKey: string, modeloKey: string) {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      Operation: "ConsultarAnoModelo",
+      Consulta: "ConsultarAnoModelo",
       codigoTabelaReferencia: tabelaKey,
       codigoTipoVeiculo: "1",
       codigoMarca: marcaKey,
       codigoModelo: modeloKey
     }),
   });
-  let responseData = await response.json();
+  let responseData = JSON.parse(await response.json());
   let formattedData: FipeData[] = responseData.map((item: { Label: string, Value: number }) => {
     return {
       Key: item.Value,
@@ -90,7 +90,7 @@ async function getPreco(tabelaKey: string, marcaKey: string, modeloKey: string, 
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      Operation: "ConsultarValorComTodosParametros",
+      Consulta: "ConsultarValorComTodosParametros",
       codigoTabelaReferencia: tabelaKey,
       codigoTipoVeiculo: "1",
       codigoMarca: marcaKey,
@@ -99,7 +99,7 @@ async function getPreco(tabelaKey: string, marcaKey: string, modeloKey: string, 
       codigoTipoCombustivel: tipoKey,
     }),
   });
-  let responseData = await response.json();
+  let responseData = JSON.parse(await response.json());
   return responseData.Valor;
 }
 

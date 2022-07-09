@@ -1,10 +1,10 @@
 const axios = require("axios");
 
 exports.handler = async (event) => {
-  const operation = event.Operation;
+  const consulta = event.Consulta;
   let response;
 
-  switch (operation) {
+  switch (consulta) {
     case "ConsultarTabelaDeReferencia":
       response = await axios
         .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarTabelaDeReferencia")

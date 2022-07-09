@@ -16,7 +16,7 @@ export default function Select(props: Props) {
       <div className="flex items-center px-5 h-full w-2/3 md:w-full">
         <select className="select-text h-1/2 w-full rounded" onChange={props.onChange} defaultValue={'0'} >
           {props.title != 'Tabela' ? <option key={'0'} value={'0'} label={'Selecione'} hidden /> : null}
-          {props.data.map((item: FipeData) => <option key={item.Key} value={item.Key} label={item.Value} />)}
+          {props.data.map((item: FipeData) => <option key={item.Key} value={item.Key} label={item.Value}>{item.Value}</option>)}
         </select>
       </div>
     </>
