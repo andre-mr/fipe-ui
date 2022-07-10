@@ -1,6 +1,9 @@
 # :oncoming_automobile: Fipe UI
 Frontend alternativo para consulta de preços de veículos Fipe.
 
+<!-- LINK DA PUBLICAÇÃO -->
+:link: [Abra o projeto hospedado no AWS Amplify](https://dev.d1t9nls3ytxo9r.amplifyapp.com/)
+
 <!-- SOBRE -->
 ## :page_with_curl: Sobre o projeto
 Interface limpa para consulta de preços de veículos na "Tabela Fipe".
