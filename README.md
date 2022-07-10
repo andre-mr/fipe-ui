@@ -1,6 +1,9 @@
 # :oncoming_automobile: Fipe UI
 Alternate frontend for Fipe vehicle prices.
 
+<!-- PUBLISHED LINK -->
+:link: [Open project hosted in AWS Amplify](https://dev.d1t9nls3ytxo9r.amplifyapp.com/)
+
 <!-- ABOUT -->
 ## :page_with_curl: About the project
 Clean interface for querying vehicle prices in the "Fipe Table".  
@@ -19,15 +22,15 @@ It's a double scraping project, using backend to query table data and vehicle im
 
 <!-- USAGE -->
 ## :desktop_computer:	Basic usage
-* Select table period (month+year)
-* Select manufacturer
-* Select one first:
-  * Vehicle model
-  * Vehicle year and variation
-* After model choice, the year list is automatically filtered to match that model
-* After year choice, the model list is automatically filtered to match only vehicles from that year
-* Price is shown after all 4 choices done
-* A google image search is made with selections made, and the first result is shown.
+* Select table period (month+year).
+* Select manufacturer.
+* Select in any order:
+  * Vehicle model.
+  * Vehicle year and variation.
+* After model choice, the year list is automatically filtered to match that model.
+* After year choice, the model list is automatically filtered to match only vehicles from that year.
+* Price is shown after all 4 choices done.
+* A Google image search is made with selections made, and the first result is shown.
 
 <!-- NOTES FOR DEVELOPERS -->
 ## :keyboard:	Notes for developers
