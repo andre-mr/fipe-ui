@@ -1,110 +1,11 @@
 import Select from "./components/Select";
 import React, { useState, useEffect } from "react";
-import { FipeData } from './interfaces';
-
-const url = 'https://l3j0wbn7la.execute-api.sa-east-1.amazonaws.com/dev';
-
-async function getTabelas(): Promise<FipeData[]> {
-  const response = await fetch(url, {
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Consulta: "ConsultarTabelaDeReferencia",
-    }),
-  });
-  let responseData = JSON.parse(await response.json());
-  let formattedData: FipeData[] = responseData.map((item: { Codigo: number, Mes: string }) => {
-    return {
-      Key: item.Codigo,
-      Value: item.Mes
-    }
-  })
-  return formattedData;
-}
-
-async function getMarcas(tabelaKey: string): Promise<FipeData[]> {
-  const response = await fetch(url, {
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Consulta: "ConsultarMarcas",
-      codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
-    }),
-  });
-  let responseData = JSON.parse(await response.json());
-  let formattedData: FipeData[] = responseData.map((item: { Label: string, Value: number }) => {
-    return {
-      Key: item.Value,
-      Value: item.Label
-    }
-  })
-  return formattedData;
-}
-
-async function getModelos(tabelaKey: string, marcaKey: string) {
-  const response = await fetch(url, {
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Consulta: "ConsultarModelos",
-      codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
-      codigoMarca: marcaKey
-    }),
-  });
-  let responseData = JSON.parse(await response.json());
-  let formattedData: FipeData[] = responseData.Modelos.map((item: { Label: string, Value: number }) => {
-    return {
-      Key: item.Value,
-      Value: item.Label
-    }
-  })
-  return formattedData;
-}
-
-async function getAnos(tabelaKey: string, marcaKey: string, modeloKey: string) {
-  const response = await fetch(url, {
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Consulta: "ConsultarAnoModelo",
-      codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
-      codigoMarca: marcaKey,
-      codigoModelo: modeloKey
-    }),
-  });
-  let responseData = JSON.parse(await response.json());
-  let formattedData: FipeData[] = responseData.map((item: { Label: string, Value: number }) => {
-    return {
-      Key: item.Value,
-      Value: item.Label
-    }
-  })
-  return formattedData;
-}
-
-async function getPreco(tabelaKey: string, marcaKey: string, modeloKey: string, anoKey: string, tipoKey: string) {
-  const response = await fetch(url, {
-    method: "post",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      Consulta: "ConsultarValorComTodosParametros",
-      codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
-      codigoMarca: marcaKey,
-      codigoModelo: modeloKey,
-      anoModelo: anoKey,
-      codigoTipoCombustivel: tipoKey,
-    }),
-  });
-  let responseData = JSON.parse(await response.json());
-  return responseData.Valor;
-}
-
+import { FipeData } from './services/interfaces';
+import apiServices from "./services/api-services";
+import fipeLogo from './assets/fipe-logo.png';
 
 export default function App() {
+  const imagemDefault = fipeLogo;
   const [tabelas, setTabelas] = useState<FipeData[]>([]);
   const [tabela, setTabela] = useState<FipeData>({ Key: '', Value: '' });
   const [marcas, setMarcas] = useState<FipeData[]>([]);
@@ -114,6 +15,8 @@ export default function App() {
   const [anos, setAnos] = useState<FipeData[]>([]);
   const [ano, setAno] = useState<FipeData>({ Key: '', Value: '' });
   const [preco, setPreco] = useState('');
+  const [imagem, setImagem] = useState(imagemDefault);
+
 
   async function changeTabela(e: React.ChangeEvent<Element>) {
     const target = e.target as HTMLSelectElement;
@@ -143,8 +46,6 @@ export default function App() {
     const option = target.children[target.selectedIndex] as HTMLOptionElement
     if (option.value != '0') {
       setModelo({ Key: option.value, Value: option.label })
-    } else {
-      setAnos([])
     }
   }
 
@@ -157,7 +58,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    getTabelas().then((response) => {
+    apiServices.getTabelas().then((response) => {
       setTabelas(response)
       setTabela({ Key: response[0].Key.toString(), Value: response[0].Value.toString() })
     });
@@ -170,7 +71,8 @@ export default function App() {
       setModelo({ Key: '0', Value: '0' })
       setAnos([])
       setAno({ Key: '0', Value: '0' })
-      getMarcas(tabela.Key).then((response) => {
+      setImagem(imagemDefault);
+      apiServices.getMarcas(tabela.Key).then((response) => {
         setMarcas(response)
         setMarca({ Key: '0', Value: '0' })
       })
@@ -179,65 +81,116 @@ export default function App() {
 
   useEffect(() => {
     if (marca && marca.Key != '' && marca.Key != '0') {
-      getModelos(tabela.Key, marca.Key).then((response) => {
-        setModelos(response)
-        setModelo({ Key: '0', Value: '0' })
-        setAnos([])
+      setModelos([])
+      setModelo({ Key: '0', Value: '0' })
+      setAnos([])
+      setAno({ Key: '0', Value: '0' })
+      setImagem(imagemDefault);
+      apiServices.getModelos(tabela.Key, marca.Key).then((response) => {
+        setModelos(response.Modelos)
+        setAnos(response.Anos)
       })
     }
   }, [marca])
 
   useEffect(() => {
-    setAno({ Key: '0', Value: '0' })
+    if (ano.Key != '0') {
+      apiServices.getPreco(tabela.Key, marca.Key, modelo.Key, ano.Key.substring(0, ano.Key.indexOf('-')), ano.Key.substring(ano.Key.indexOf('-') + 1, ano.Key.length + 1)).then((response: string) => {
+        setPreco(response)
+      })
+    }
     if (modelo && modelo.Key != '' && modelo.Key != '0') {
-      setAnos([])
-      getAnos(tabela.Key, marca.Key, modelo.Key).then((response) => {
-        setAnos(response)
-        let responseAno = response[0] as FipeData
-        if (responseAno.Value.includes('32000')) {
-          responseAno.Value = responseAno.Value.replace('32000', 'Zero KM')
-        }
+      apiServices.getAnos(tabela.Key, marca.Key, modelo.Key).then((response) => {
+        let anos: FipeData[] = response.map((item) => {
+          return {
+            Key: item.Key,
+            Value: item.Value.includes('32000') ? item.Value.replace('32000', 'Zero KM') : item.Value
+          }
+        })
+        setAnos(anos)
       })
     }
   }, [modelo])
 
   useEffect(() => {
     if (ano && ano.Key != '' && ano.Key != '0') {
-      getPreco(tabela.Key, marca.Key, modelo.Key, ano.Key.substring(0, ano.Key.indexOf('-')), ano.Key.substring(ano.Key.indexOf('-') + 1, ano.Key.length + 1)).then((response: string) => {
-        setPreco(response)
+      if (modelo.Key != '0') {
+        apiServices.getPreco(tabela.Key, marca.Key, modelo.Key, ano.Key.substring(0, ano.Key.indexOf('-')), ano.Key.substring(ano.Key.indexOf('-') + 1, ano.Key.length + 1)).then((response: string) => {
+          setPreco(response)
+        })
+      }
+      apiServices.getModelosPorAno(tabela.Key, marca.Key, modelo.Key, ano.Key.substring(0, ano.Key.indexOf('-')), ano.Key.substring(ano.Key.indexOf('-') + 1, ano.Key.length + 1)).then((response) => {
+        setModelos(response)
       })
     } else {
       setPreco('R$ 0,00')
     }
   }, [ano])
 
+  useEffect(() => {
+    if (preco && preco != 'R$ 0,00') {
+      apiServices.getImagem(marca.Value, modelo.Value, ano.Value).then((response) => {
+        setImagem(response);
+      })
+    }
+  }, [preco])
+
   return (
     <div className="App h-full dark:bg-slate-800 p-0 m-0">
-      <header className="flex justify-center items-center bg-gray-900 h-1/6">
-        <p className="text-blue-100 text-4xl">Fipe Interface</p>
+      <header className="flex justify-center items-center bg-gray-900 h-[5%]">
+        <p className="text-slate-100 text-2xl">Consulta Fipe</p>
       </header>
 
-      <div className="flex flex-col justify-center items-center h-5/6">
-        <div className="h-5/6 w-5/6 md:w-4/6 bg-slate-500 rounded">
-          <div className="flex flex-row h-1/5 p-1">
-            <Select title="Tabela" data={tabelas} onChange={changeTabela} />
-          </div>
-          <div className="flex flex-row h-1/5 p-1">
-            <Select title="Marca" data={marcas} onChange={changeMarca} />
-          </div>
-          <div className="flex flex-row h-1/5 p-1">
-            <Select title="Modelo" data={modelos} onChange={changeModelo} />
-          </div>
-          <div className="flex flex-row h-1/5 p-1">
-            <Select title="Ano" data={anos} onChange={changeAno} />
-          </div>
-          <div className="flex flex-row h-1/5 py-3 px-6">
-            <div className="flex w-full justify-center items-center rounded bg-slate-200">
-              <p className="font-bold text-green-800 text-2xl">{preco || 'R$ 0,00'}</p>
+      <div className="flex flex-col justify-center items-center h-[95%]">
+        <div className="h-4/6 w-full md:w-4/6 rounded p-1">
+
+          <div className="flex flex-col h-2/6 border border-slate-500 rounded mb-1 mx-4">
+            <div className="flex flex-row h-1/2 p-0">
+              <Select title="Tabela" data={tabelas} onChange={changeTabela} />
+            </div>
+
+            <div className="flex flex-row h-1/2 p-0">
+              <Select title="Marca" data={marcas} onChange={changeMarca} />
             </div>
           </div>
+
+          <div className="flex flex-col h-2/6 border border-slate-500 rounded mb-1 mx-4">
+            <div className="flex flex-row h-1/2 p-0">
+              <Select title="Modelo" data={modelos} onChange={changeModelo} />
+            </div>
+            <div className="flex flex-row h-1/2 p-0">
+              <Select title="Ano" data={anos} onChange={changeAno} />
+            </div>
+          </div>
+
+          <div className="flex flex-row h-1/6 py-1 px-4">
+            <button
+              className="flex w-full justify-center items-center border border-slate-300 rounded hover:bg-slate-700"
+              onClick={() => {
+                setTabelas([])
+                apiServices.getTabelas().then((response) => {
+                  setTabelas(response)
+                  setTabela({ Key: response[0].Key.toString(), Value: response[0].Value.toString() })
+                })
+              }}
+            >
+              <p className="text-slate-300 text-xl">Limpar</p>
+            </button>
+          </div>
+
+          <div className="flex flex-row h-1/6 py-0 px-4">
+            <div className="flex w-full justify-center items-center bg-slate-800 rounded">
+              <p className="font-bold text-green-400 text-3xl">{preco || 'R$ 0,00'}</p>
+            </div>
+          </div>
+
         </div>
+
+        <div className="h-2/6 w-[90%] flex justify-center items-center p-0">
+          <img className="object-contain h-full m-0 p-0" src={imagem ? imagem : undefined}></img>
+        </div>
+
       </div>
-    </div>
+    </div >
   );
 }
