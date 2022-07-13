@@ -22,14 +22,17 @@ async function getTabelas(): Promise<FipeData[]> {
   return formattedData;
 }
 
-async function getMarcas(tabelaKey: string): Promise<FipeData[]> {
+async function getMarcas(
+  tipoKey: string,
+  tabelaKey: string
+): Promise<FipeData[]> {
   const response = await fetch(url, {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
+      codigoTipoVeiculo: tipoKey,
       Consulta: "ConsultarMarcas",
       codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
     }),
   });
   let responseData = JSON.parse(await response.json());
@@ -44,14 +47,18 @@ async function getMarcas(tabelaKey: string): Promise<FipeData[]> {
   return formattedData;
 }
 
-async function getModelos(tabelaKey: string, marcaKey: string) {
+async function getModelos(
+  tipoKey: string,
+  tabelaKey: string,
+  marcaKey: string
+) {
   const response = await fetch(url, {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       Consulta: "ConsultarModelos",
+      codigoTipoVeiculo: tipoKey,
       codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
       codigoMarca: marcaKey,
     }),
   });
@@ -78,23 +85,24 @@ async function getModelos(tabelaKey: string, marcaKey: string) {
 }
 
 async function getModelosPorAno(
+  tipoKey: string,
   tabelaKey: string,
   marcaKey: string,
   modeloKey: string,
   anoKey: string,
-  tipoKey: string
+  variacaoKey: string
 ) {
   const response = await fetch(url, {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       Consulta: "ConsultarModelosAtravesDoAno",
+      codigoTipoVeiculo: tipoKey,
       codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
       codigoMarca: marcaKey,
       codigoModelo: modeloKey,
       anoModelo: anoKey,
-      codigoTipoCombustivel: tipoKey,
+      codigoTipoCombustivel: variacaoKey,
     }),
   });
   let responseData = JSON.parse(await response.json());
@@ -109,14 +117,19 @@ async function getModelosPorAno(
   return formattedData;
 }
 
-async function getAnos(tabelaKey: string, marcaKey: string, modeloKey: string) {
+async function getAnos(
+  tipoKey: string,
+  tabelaKey: string,
+  marcaKey: string,
+  modeloKey: string
+) {
   const response = await fetch(url, {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       Consulta: "ConsultarAnoModelo",
+      codigoTipoVeiculo: tipoKey,
       codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
       codigoMarca: marcaKey,
       codigoModelo: modeloKey,
     }),
@@ -134,23 +147,24 @@ async function getAnos(tabelaKey: string, marcaKey: string, modeloKey: string) {
 }
 
 async function getPreco(
+  tipoKey: string,
   tabelaKey: string,
   marcaKey: string,
   modeloKey: string,
   anoKey: string,
-  tipoKey: string
+  variacaoKey: string
 ) {
   const response = await fetch(url, {
     method: "post",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       Consulta: "ConsultarValorComTodosParametros",
+      codigoTipoVeiculo: tipoKey,
       codigoTabelaReferencia: tabelaKey,
-      codigoTipoVeiculo: "1",
       codigoMarca: marcaKey,
       codigoModelo: modeloKey,
       anoModelo: anoKey,
-      codigoTipoCombustivel: tipoKey,
+      codigoTipoCombustivel: variacaoKey,
     }),
   });
   let responseData = JSON.parse(await response.json());

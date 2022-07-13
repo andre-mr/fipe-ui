@@ -10,25 +10,26 @@ exports.handler = async (event) => {
         .get(`https://www.google.com/search?tbm=isch&q=${event.marca} ${event.modelo} ${event.ano}`)
       let link = response.data.substring(response.data.search(/src="http/), response.data.search(/&amp;s"/)).replace('src="', '')
       return link
-    
+
     case "ConsultarTabelaDeReferencia":
       response = await axios
-        .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarTabelaDeReferencia")
+        .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarTabelaDeReferencia", {
+        })
       return JSON.stringify(response.data)
 
     case "ConsultarMarcas":
       response = await axios
         .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarMarcas", {
-          codigoTabelaReferencia: event.codigoTabelaReferencia,
-          codigoTipoVeiculo: event.codigoTipoVeiculo
+          codigoTipoVeiculo: event.codigoTipoVeiculo,
+          codigoTabelaReferencia: event.codigoTabelaReferencia
         })
       return JSON.stringify(response.data)
 
     case "ConsultarModelos":
       response = await axios
         .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarModelos", {
-          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoTipoVeiculo: event.codigoTipoVeiculo,
+          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoMarca: event.codigoMarca
         })
       return JSON.stringify(response.data)
@@ -36,8 +37,8 @@ exports.handler = async (event) => {
     case "ConsultarAnoModelo":
       response = await axios
         .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarAnoModelo", {
-          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoTipoVeiculo: event.codigoTipoVeiculo,
+          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoMarca: event.codigoMarca,
           codigoModelo: event.codigoModelo
         })
@@ -46,8 +47,8 @@ exports.handler = async (event) => {
     case "ConsultarModelosAtravesDoAno":
       response = await axios
         .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarModelosAtravesDoAno", {
-          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoTipoVeiculo: event.codigoTipoVeiculo,
+          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoMarca: event.codigoMarca,
           codigoModelo: event.codigoModelo,
           anoModelo: event.anoModelo,
@@ -58,8 +59,8 @@ exports.handler = async (event) => {
     case "ConsultarValorComTodosParametros":
       response = await axios
         .post("https://veiculos.fipe.org.br/api/veiculos//ConsultarValorComTodosParametros", {
-          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoTipoVeiculo: event.codigoTipoVeiculo,
+          codigoTabelaReferencia: event.codigoTabelaReferencia,
           codigoMarca: event.codigoMarca,
           codigoModelo: event.codigoModelo,
           anoModelo: event.anoModelo,
