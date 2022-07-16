@@ -161,8 +161,16 @@ export default function App() {
 
   useEffect(() => {
     if (preco && preco != 'R$ 0,00') {
+      setImagem('')
       apiServices.getImagem(marca.Value, modelo.Value, ano.Value).then((response) => {
-        setImagem(response);
+        let imageUrl
+        if (response.indexOf('http:') > -1 || response.indexOf('https:') > -1) {
+          imageUrl = response;
+          setImagem(response);
+        } else {
+          imageUrl = 'data:image/png;base64,' + response;
+          setImagem(imageUrl);
+        }
       })
     }
   }, [preco])
@@ -227,7 +235,13 @@ export default function App() {
         </div>
 
         <div className="h-2/6 w-[90%] flex justify-center items-center p-0">
-          <img className="object-contain h-full m-0 p-0" src={imagem ? imagem : undefined}></img>
+          {(imagem && imagem != '')
+            ?
+            <img className="object-contain h-full m-0 p-0" src={imagem ? imagem : undefined}></img>
+            : <div className="self-center text-slate-100">
+              <p>procurando imagem...</p>
+            </div>
+          }
         </div>
 
       </div>
