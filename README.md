@@ -2,7 +2,7 @@
 Alternate frontend for Fipe vehicle prices.
 
 <!-- PUBLISHED LINK -->
-:link: [Open project hosted in AWS Amplify](https://dev.d1t9nls3ytxo9r.amplifyapp.com/)
+:link: [Open project hosted in AWS Amplify](https://fipe.andremr.dev/)
 
 <!-- ABOUT -->
 ## :page_with_curl: About the project
