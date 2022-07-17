@@ -2,7 +2,7 @@
 Frontend alternativo para consulta de preços de veículos Fipe.
 
 <!-- LINK DA PUBLICAÇÃO -->
-:link: [Abra o projeto hospedado no AWS Amplify](https://dev.d1t9nls3ytxo9r.amplifyapp.com/)
+:link: [Abra o projeto hospedado no AWS Amplify](https://fipe.andremr.dev/)
 
 <!-- SOBRE -->
 ## :page_with_curl: Sobre o projeto
